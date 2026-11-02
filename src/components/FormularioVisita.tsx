@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
+import { AgendaDia } from "@/components/AgendaDia";
 import { comprobarReglas, NOMBRE_REGLA, type Incumplimiento, type VisitaExistente } from "@/lib/reglas";
 import type { ErrorCampo } from "@/lib/validacion";
 import type { Obra, Tecnico } from "@/lib/visitas";
@@ -159,12 +160,10 @@ export function FormularioVisita({ tecnicos, obras, fechaInicial }: Props) {
         {visitasDelDia && (
           <>
             <p className="mb-3 text-sm text-slate-500">{tecnicoSeleccionado?.nombre}</p>
-            <ul className="space-y-1 text-sm">
-              {visitasDelDia.length === 0 && <li className="text-slate-500">Sin visitas programadas este día.</li>}
-              {visitasDelDia.map((v) => (
-                <li key={v.id}>{v.horaInicio} · {v.duracionMin} min · {v.obraNombre}</li>
-              ))}
-            </ul>
+            <AgendaDia
+              visitas={visitasDelDia}
+              nueva={datosCompletos ? { horaInicio, duracionMin: duracion, valida: avisos.length === 0 } : null}
+            />
             {datosCompletos && avisos.length > 0 && (
               <div className="mt-3 rounded-md border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">
                 <p className="font-semibold">Con estos datos la visita no se podrá guardar:</p>

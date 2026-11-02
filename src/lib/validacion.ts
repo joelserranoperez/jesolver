@@ -31,6 +31,16 @@ export const esquemaNuevaVisita = z.object({
 
 export type NuevaVisita = z.infer<typeof esquemaNuevaVisita>;
 
+/** Filtros del listado (?tecnicoId=1&fecha=2026-11-03&estado=programada). Vacío = sin filtro. */
+const vacioComoUndefined = (valor: unknown) => (valor === "" || valor === null ? undefined : valor);
+export const esquemaFiltros = z.object({
+  tecnicoId: z.preprocess(vacioComoUndefined, z.coerce.number().int().positive().optional()),
+  fecha: z.preprocess(vacioComoUndefined, esquemaFecha.optional()),
+  estado: z.preprocess(vacioComoUndefined, z.enum(["programada", "cancelada"]).optional()),
+});
+
+export type Filtros = z.infer<typeof esquemaFiltros>;
+
 export interface ErrorCampo {
   campo: string;
   mensaje: string;

@@ -129,16 +129,6 @@ export async function crearVisita(datos: NuevaVisita): Promise<ResultadoCrear> {
   }
 }
 
-/** Visitas programadas (no canceladas) de un técnico en un día, para la vista de agenda. */
-export async function agendaDelDia(tecnicoId: number, fecha: string): Promise<VisitaExistente[]> {
-  const client = await db().connect();
-  try {
-    return await visitasProgramadasDelDia(client, tecnicoId, fecha);
-  } finally {
-    client.release();
-  }
-}
-
 async function visitasProgramadasDelDia(client: PoolClient, tecnicoId: number, fecha: string) {
   const { rows } = await client.query<VisitaExistente>(
     `SELECT v.id,

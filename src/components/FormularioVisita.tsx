@@ -25,7 +25,11 @@ export function FormularioVisita({ tecnicos, obras, fechaInicial }: Props) {
 
   const [enviando, setEnviando] = useState(false);
   const [erroresCampo, setErroresCampo] = useState<ErrorCampo[]>([]);
-  const [erroresReglas, setErroresReglas] = useState<Incumplimiento[]>([]);
+  // Errores de reglas devueltos por el servidor, junto con los datos que se enviaron:
+  // si el usuario cambia algún campo, dejan de mostrarse porque ya no corresponden.
+  const [rechazo, setRechazo] = useState<{ datos: string; errores: Incumplimiento[] } | null>(null);
+  const datosActuales = JSON.stringify({ tecnicoId, obraId, fecha, horaInicio, duracionMin });
+  const erroresReglas = rechazo && rechazo.datos === datosActuales ? rechazo.errores : [];
   const [errorGeneral, setErrorGeneral] = useState<string | null>(null);
 
   // Agenda del técnico ese día (solo visitas programadas), para mostrarla y avisar antes de enviar.
@@ -63,20 +67,21 @@ export function FormularioVisita({ tecnicos, obras, fechaInicial }: Props) {
     evento.preventDefault();
     setEnviando(true);
     setErroresCampo([]);
-    setErroresReglas([]);
+    setRechazo(null);
     setErrorGeneral(null);
+    const datosEnviados = datosActuales;
     try {
       const respuesta = await fetch("/api/visitas", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ tecnicoId, obraId, fecha, horaInicio, duracionMin }),
+        body: datosEnviados,
       });
       const cuerpo = await respuesta.json();
       if (respuesta.status === 201) {
         router.push(`/?fecha=${fecha}&creada=${cuerpo.id}`);
         return;
       }
-      if (cuerpo.tipo === "reglas") setErroresReglas(cuerpo.errores);
+      if (cuerpo.tipo === "reglas") setRechazo({ datos: datosEnviados, errores: cuerpo.errores });
       else if (cuerpo.tipo === "datos") setErroresCampo(cuerpo.errores);
       else setErrorGeneral("No se ha podido guardar la visita.");
     } catch {

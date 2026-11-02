@@ -27,7 +27,7 @@ describe("regla a) solapes", () => {
     expect(reglas("10:00", 60, 1)).toEqual([]);
   });
 
-  it("ignora las visitas de la lista (el servicio solo pasa las programadas)", () => {
+  it("sin otras visitas ese día no hay conflicto", () => {
     expect(reglas("09:00", 60, 3, [])).toEqual([]);
   });
 });

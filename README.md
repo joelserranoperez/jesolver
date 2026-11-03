@@ -1,6 +1,6 @@
 # Planificador de visitas
 
-Aplicación web para planificar las visitas de los técnicos a las obras sin solapes, con tiempo de desplazamiento entre obras y dentro de la jornada laboral.
+Aplicación web para planificar las visitas de los técnicos a las obras sin que se solapen, con tiempo de desplazamiento entre obras y dentro de la jornada laboral.
 
 **Stack:** Next.js 16 (App Router) · React 19 · TypeScript · PostgreSQL · Tailwind CSS · Zod · Vitest
 
@@ -14,19 +14,19 @@ Aplicación web para planificar las visitas de los técnicos a las obras sin sol
 
 ## Funcionalidades
 
-1. **Técnicos y obras**: 4 técnicos y 8 obras de ejemplo (página *Técnicos y obras*).
-2. **Programar visita**: obra, técnico, fecha, hora de inicio y duración. Si no se puede guardar, se indica qué regla no se cumple y con qué visita choca.
-3. **Reglas de planificación**, comprobadas en el servidor y garantizadas también por la base de datos:
+1. Técnicos y obras: 4 técnicos y 8 obras de ejemplo (página Técnicos y obras).
+2. Programar visita: obra, técnico, fecha, hora de inicio y duración. Si no se puede guardar, se indica qué regla no se cumple y con qué visita choca.
+3. Reglas de planificación, comprobadas en el servidor y garantizadas también por la base de datos:
    - a) el técnico no tiene otra visita que se solape;
    - b) entre dos visitas del mismo técnico a obras diferentes hay al menos 30 min;
    - c) la visita empieza y termina entre las 08:00 y las 17:00.
-4. **Cancelar**: la visita pasa a *Cancelada*, deja libre el horario y sigue visible.
-5. **Listado**: ordenado por fecha y hora, filtrable por técnico, fecha y estado.
-6. **Extra:** agenda visual del técnico en el formulario, con aviso en tiempo real antes de guardar.
+4. Cancelar: la visita pasa a *Cancelada*, deja libre el horario y sigue visible.
+5. Listado: ordenado por fecha y hora, filtrable por técnico, fecha y estado.
+6. Extra: agenda visual del técnico en el formulario, con aviso en tiempo real antes de guardar.
 
 ## Ejecutar en local
 
-Requisitos: **Node.js 22 o superior** y un **PostgreSQL 14 o superior** (con Docker o con una base de datos gratuita de Neon).
+Requisitos: Node.js 22 o superior y un PostgreSQL 14 o superior (con Docker o con una base de datos gratuita de Neon).
 
 ```bash
 # 1. Clonar e instalar dependencias
@@ -104,7 +104,7 @@ src/
 
 ## Despliegue (Vercel + Neon)
 
-1. Crea una base de datos en [Neon](https://neon.tech) y copia la cadena de conexión **con pooling** (host con `-pooler`).
+1. Crea una base de datos en [Neon](https://neon.tech) y copia la cadena de conexión con pooling (host con `-pooler`).
 2. Desde tu equipo, con esa cadena en `.env`, ejecuta `npm run db:setup` para crear las tablas y los datos.
 3. En [Vercel](https://vercel.com) importa el repositorio de GitHub y añade la variable de entorno `DATABASE_URL`.
 4. Deploy. Las credenciales solo están en `.env` (ignorado por git) y en las variables de entorno de Vercel.

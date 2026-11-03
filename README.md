@@ -4,6 +4,8 @@ Aplicación web para planificar las visitas de los técnicos a las obras sin sol
 
 **Stack:** Next.js 16 (App Router) · React 19 · TypeScript · PostgreSQL · Tailwind CSS · Zod · Vitest
 
+🌐 **Aplicación publicada:** <https://planificador-visitas-gamma.vercel.app> (Vercel + Neon, región Frankfurt). La primera carga puede tardar unos segundos mientras la base de datos gratuita se reactiva.
+
 📄 **[Explicación de la solución (decisiones, supuestos, uso de IA)](EXPLICACION.md)**
 
 | Programar una visita | Listado de visitas |

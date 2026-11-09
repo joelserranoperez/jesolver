@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { AgendaDia } from "@/components/AgendaDia";
 import { comprobarReglas, NOMBRE_REGLA, type Incumplimiento, type VisitaExistente } from "@/lib/reglas";
 import type { ErrorCampo } from "@/lib/validacion";
@@ -63,6 +63,26 @@ export function FormularioVisita({ tecnicos, obras, fechaInicial }: Props) {
     [visitasDelDia, datosCompletos, obraId, horaInicio, duracion],
   );
 
+  // Con cacheComponents, Next no desmonta la página al navegar: la oculta con <Activity> y
+  // conserva su estado. Tras guardar con éxito hay que dejar el formulario como nuevo al
+  // ocultarse; si no, al volver seguiría en "Guardando…" (botón deshabilitado) y con la
+  // agenda anterior, sin la visita recién creada. Si el usuario sale sin guardar, se
+  // conserva lo que había escrito.
+  const reiniciarAlOcultar = useRef(false);
+  useLayoutEffect(() => {
+    return () => {
+      if (!reiniciarAlOcultar.current) return;
+      reiniciarAlOcultar.current = false;
+      setTecnicoId("");
+      setObraId("");
+      setFecha(fechaInicial);
+      setHoraInicio("09:00");
+      setDuracionMin("60");
+      setAgenda(null);
+      setEnviando(false);
+    };
+  }, [fechaInicial]);
+
   async function enviar(evento: React.FormEvent<HTMLFormElement>) {
     evento.preventDefault();
     setEnviando(true);
@@ -78,6 +98,7 @@ export function FormularioVisita({ tecnicos, obras, fechaInicial }: Props) {
       });
       const cuerpo = await respuesta.json();
       if (respuesta.status === 201) {
+        reiniciarAlOcultar.current = true;
         router.push(`/?fecha=${fecha}&creada=${cuerpo.id}`);
         return;
       }
